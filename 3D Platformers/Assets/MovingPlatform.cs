@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class MovingPlatform : MonoBehaviour
 {	
-	public Vector3 pos1;
-	public Vector3 pos2;
+	private Vector3 startPos;
 	public float moveDur;
 	private bool moving = false;
 	private Vector3 difference;
@@ -14,8 +13,8 @@ public class MovingPlatform : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-		transform.position = pos1;
-		difference = pos2 - pos1;
+		startPos = transform.Find("Platform").position;
+		difference = transform.Find("End Point").position - startPos;
     }
 
     // Update is called once per frame
@@ -26,6 +25,6 @@ public class MovingPlatform : MonoBehaviour
 		{
 			timepassed = 2 - timepassed;
 		}
-		transform.position = pos1 + difference * timepassed;
+		transform.position = startPos + difference * timepassed;
     }
 }

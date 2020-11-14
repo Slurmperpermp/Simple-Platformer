@@ -6,6 +6,7 @@ using UnityEngine;
 public class Controller : MonoBehaviour
 {
     public float speed;
+	public float bounceFactor;
 	private ParticleSystem particles;
 	private ParticleSystem.ShapeModule shape;
     public float jumpStren;
@@ -48,13 +49,12 @@ public class Controller : MonoBehaviour
 			
 			moveDirect.y = 0; 
 			moveDirect = moveDirect.normalized * dashspeed;
-			float angle = Mathf.Rad2Deg*Mathf.Atan2(moveDirect.x, moveDirect.z) + 180;
-			shape.rotation = new Vector3(0f,angle,0f);
-			transform.rotation = Quaternion.Euler(moveDirect.x,0,moveDirect.z);
+			///float angle = Mathf.Rad2Deg*Mathf.Atan2(moveDirect.x, moveDirect.z) + 180;
+			///shape.rotation = new Vector3(0f,angle,0f);
+			///transform.rotation = Quaternion.Euler(moveDirect.x,0,moveDirect.z);
 			Vector3 angles = transform.eulerAngles;
-			angles.y += 90;
+			angles.x = 30;
 			transform.eulerAngles = angles; 
-			transform.Rotate(90 * Vector3.up);
 		}
 		else
 		{
@@ -77,22 +77,52 @@ public class Controller : MonoBehaviour
 		  moveDirect.y = jumpStren;
 		  StopDash();
 		}
-
+		Vector3 angles2 = transform.eulerAngles ;
+		angles2.y = Mathf.Atan2(moveDirect.x, moveDirect.z )* Mathf.Rad2Deg;
+		transform.eulerAngles = angles2;
 		cc.Move(moveDirect * Time.deltaTime);
+		
 		
     }
 	void OnCollisionEnter(Collision other)
 	{
 		if(other.gameObject.tag == "Moving Platform")
 		{
-			Debug.Log("Hello :)");
+			transform.parent = other.transform.parent;
 		}
-		Debug.Log(other);
+		
 	} 
+	void OnCollisionStay(Collision other)
+	{
+		if(other.gameObject.tag == "Moving Platform")
+		{
+			transform.parent = other.transform.parent;
+		}
+	}
+	void OnCollisionExit(Collision other)
+	{
+		if(other.gameObject.tag == "Moving Platform")
+		{
+			transform.parent = null;
+		}
+	}
 	void StopDash()
 	{	
 		dashing = false;
 		particles.Stop();
-		transform.rotation = Quaternion.Euler(0,0,0);
+		transform.eulerAngles = new Vector3(0,transform.eulerAngles.y,transform.eulerAngles.z);
+	}
+	void OnControllerColliderHit (ControllerColliderHit other)
+	{
+		
+	} 
+	void OnTriggerStay (Collider other)
+	{
+		if(other.gameObject.tag == "Bouncy Platform")
+		{
+			//moveDirect.y *= -1;
+			moveDirect.y = Mathf.Abs(moveDirect.y)* bounceFactor;
+		//	jumps = jumpsMax - 1 ; 
+		}
 	}
 }
