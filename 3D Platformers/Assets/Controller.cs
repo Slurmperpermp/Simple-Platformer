@@ -6,6 +6,7 @@ using UnityEngine;
 public class Controller : MonoBehaviour
 {
     public float speed;
+	private Transform OgParent;
 	public float bounceFactor;
 	private ParticleSystem particles;
 	private ParticleSystem.ShapeModule shape;
@@ -29,6 +30,7 @@ public class Controller : MonoBehaviour
 		particles = GetComponent<ParticleSystem>();
 		shape = particles.shape;
 		camera = GameObject.Find("Main Camera").GetComponent<Transform>();
+		OgParent = transform.parent;
     }
 
     // Update is called once per frame
@@ -82,14 +84,10 @@ public class Controller : MonoBehaviour
 		transform.eulerAngles = angles2;
 		cc.Move(moveDirect * Time.deltaTime);
 		
-		
     }
 	void OnCollisionEnter(Collision other)
 	{
-		if(other.gameObject.tag == "Moving Platform")
-		{
-			transform.parent = other.transform.parent;
-		}
+		Debug.Log(other.contactCount);
 		
 	} 
 	void OnCollisionStay(Collision other)
@@ -101,10 +99,7 @@ public class Controller : MonoBehaviour
 	}
 	void OnCollisionExit(Collision other)
 	{
-		if(other.gameObject.tag == "Moving Platform")
-		{
-			transform.parent = null;
-		}
+		
 	}
 	void StopDash()
 	{	
@@ -112,17 +107,35 @@ public class Controller : MonoBehaviour
 		particles.Stop();
 		transform.eulerAngles = new Vector3(0,transform.eulerAngles.y,transform.eulerAngles.z);
 	}
-	void OnControllerColliderHit (ControllerColliderHit other)
-	{
-		
-	} 
+	
+	
 	void OnTriggerStay (Collider other)
 	{
-		if(other.gameObject.tag == "Bouncy Platform")
+		if(other.gameObject.tag == "Moving Platform")
 		{
-			//moveDirect.y *= -1;
-			moveDirect.y = Mathf.Abs(moveDirect.y)* bounceFactor;
-		//	jumps = jumpsMax - 1 ; 
+			transform.parent = other.transform.parent;
+			Debug.Log("Enter");
 		}
 	}
-}
+	void OnTriggerEnter (Collider other)
+	{
+		
+		if(other.gameObject.tag == "Bouncy Platform")
+		{
+			moveDirect.y = Mathf.Abs(moveDirect.y)* bounceFactor;
+		}
+		
+	}
+	void OnTriggerExit (Collider other)
+	{
+		if(other.gameObject.tag == "Moving Platform")
+		{
+			transform.parent = OgParent;
+			Debug.Log("Exit ");
+		}
+	}
+	void LateUpdate ()
+	{
+		transform.parent = OgParent;
+	}
+}	

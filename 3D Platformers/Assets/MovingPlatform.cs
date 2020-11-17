@@ -18,7 +18,7 @@ public class MovingPlatform : MonoBehaviour
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         float timepassed = (Time.time % (moveDur * 2))/moveDur;
 		if(timepassed > 1)
