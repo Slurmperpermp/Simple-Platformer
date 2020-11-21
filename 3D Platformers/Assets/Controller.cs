@@ -19,6 +19,9 @@ public class Controller : MonoBehaviour
 	public float dashdur;
 	public int dashesMax;
 	private int dashes;
+	public int wJumpsMax;
+	private int wJumps;
+	public float wSlideSpeed;
 	Transform camera; 
     CharacterController cc;
     Vector3 moveDirect ;
@@ -61,7 +64,8 @@ public class Controller : MonoBehaviour
 		else
 		{
 			float moveDirectY = moveDirect.y;
-			moveDirect = new Vector3(Input.GetAxis("Horizontal") * speed, 0.0f, Input.GetAxis("Vertical") * speed);
+			moveDirect = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical")).normalized * speed;
+			
 			moveDirect = camera.TransformDirection(moveDirect);
 			moveDirect.y = moveDirectY;
 			if (cc.isGrounded)
@@ -69,15 +73,28 @@ public class Controller : MonoBehaviour
 				jumps = jumpsMax;
 				moveDirect.y = 0.0f;
 				dashes = dashesMax;
+				wJumps = wJumpsMax;
 			}
 			moveDirect.y += Physics.gravity.y * gravityscale * Time.deltaTime;
 			
 		}
-		if (Input.GetButtonDown("Jump") && jumps > 0 )
+		if(Input.GetButtonDown("Jump") && (cc.collisionFlags & CollisionFlags.Sides) != 0 && wJumps > 0 )
+		{
+			moveDirect.y = jumpStren;
+			StopDash();
+			jumps = 1;
+			dashes = dashesMax;
+			wJumps -= 1;
+		}
+		else if (Input.GetButtonDown("Jump") && jumps > 0 )
 		{
 		  jumps -= 1;
 		  moveDirect.y = jumpStren;
 		  StopDash();
+		}
+		else if(cc.collisionFlags == CollisionFlags.Sides && moveDirect.y < wSlideSpeed)
+		{
+			moveDirect.y = wSlideSpeed;
 		}
 		Vector3 angles2 = transform.eulerAngles ;
 		angles2.y = Mathf.Atan2(moveDirect.x, moveDirect.z )* Mathf.Rad2Deg;
