@@ -2620,7 +2620,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2daab81e26cab994fa1d5757282eedb7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 7
+  speed: 9
   bounceFactor: 1
   jumpStren: 15
   gravityscale: 2.5
@@ -2628,6 +2628,8 @@ MonoBehaviour:
   dashspeed: 20
   dashdur: 0.5
   dashesMax: 1
+  wJumpsMax: 1
+  wSlideSpeed: -3
 --- !u!143 &510247986
 CharacterController:
   m_ObjectHideFlags: 0
