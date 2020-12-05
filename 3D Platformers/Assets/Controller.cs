@@ -64,7 +64,6 @@ public class Controller : MonoBehaviour
 		else
 		{
 			float moveDirectY = moveDirect.y;
-			Debug.Log(Input.GetAxis("Horizontal"));
 			Vector3 temp = (new Vector3 (Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"))); 
 			if(temp.magnitude > 1)
 			{
@@ -111,7 +110,7 @@ public class Controller : MonoBehaviour
     }
 	void OnCollisionEnter(Collision other)
 	{
-		Debug.Log(other.contactCount);
+		//Debug.Log(other.contactCount);
 		
 	} 
 	void OnCollisionStay(Collision other)
@@ -135,11 +134,7 @@ public class Controller : MonoBehaviour
 	
 	void OnTriggerStay (Collider other)
 	{
-		if(other.gameObject.tag == "Moving Platform")
-		{
-			transform.parent = other.transform.parent;
-			Debug.Log("Enter");
-		}
+		
 	}
 	void OnTriggerEnter (Collider other)
 	{
@@ -147,6 +142,13 @@ public class Controller : MonoBehaviour
 		if(other.gameObject.tag == "Bouncy Platform")
 		{
 			moveDirect.y = Mathf.Abs(moveDirect.y)* bounceFactor;
+		}
+		
+		if(other.gameObject.tag == "Moving Platform")
+		{
+			transform.parent = other.transform.parent;
+			Debug.Log("Enter");
+			Debug.Log(other.transform.parent);
 		}
 		
 	}
@@ -160,6 +162,6 @@ public class Controller : MonoBehaviour
 	}
 	void LateUpdate ()
 	{
-		transform.parent = OgParent;
+		//transform.parent = OgParent
 	}
 }	
