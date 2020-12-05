@@ -64,8 +64,15 @@ public class Controller : MonoBehaviour
 		else
 		{
 			float moveDirectY = moveDirect.y;
-			moveDirect = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical")).normalized * speed;
+			Debug.Log(Input.GetAxis("Horizontal"));
+			Vector3 temp = (new Vector3 (Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"))); 
+			if(temp.magnitude > 1)
+			{
+				temp.Normalize();
+			}
+			moveDirect = temp * speed;
 			
+			//moveDirect = new Vector3(Input.GetAxis("Horizontal")* speed, 0.0f, Input.GetAxis("Vertical")* speed);
 			moveDirect = camera.TransformDirection(moveDirect);
 			moveDirect.y = moveDirectY;
 			if (cc.isGrounded)
